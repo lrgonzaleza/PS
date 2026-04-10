@@ -1,12 +1,12 @@
 // ============================================================
 //  PAPELI STUDIO — ARCHIVO DE CONFIGURACIÓN
 //  Generado automáticamente por el panel admin
-//  Última actualización: 10-04-2026, 2:17:52 a. m.
+//  Última actualización: 10-04-2026, 2:27:40 a. m.
 // ============================================================
 
 const PAPELI_DATA = {
   "negocio": {
-    "nombre": "Papeli Studio",
+    "nombre": "Papeli Studio CL",
     "slogan": "Hago cosas lindas con papel",
     "descripcion": "Papelería creativa, sublimación, regalos personalizados y material corporativo. Hecho con amor desde Temuco, Araucanía.",
     "direccion": "Milano 03365, Temuco, Araucanía",
