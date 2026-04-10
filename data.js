@@ -1,7 +1,7 @@
 // ============================================================
 //  PAPELI STUDIO — ARCHIVO DE CONFIGURACIÓN
 //  Generado automáticamente por el panel admin
-//  Última actualización: 10-04-2026, 2:27:40 a. m.
+//  Última actualización: 10-04-2026, 2:28:27 a. m.
 // ============================================================
 
 const PAPELI_DATA = {
@@ -20,7 +20,7 @@ const PAPELI_DATA = {
     "titulo1": "Creatividad que",
     "titulo2": "enamora",
     "titulo3": "al momento",
-    "descripcion": "Diseños únicos, sublimación, regalos personalizados y papelería con alma. Hecho con amor desde la Araucanía para el mundo.",
+    "descripcion": "Diseños únicos, sublimación, regalos personalizados y papelería con alma. ",
     "stat1": {
       "numero": "170+",
       "label": "Publicaciones"
