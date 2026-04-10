@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Papeli Studio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --rose:#c9607a;--rose-mid:#b85570;--rose-light:#e8a0b4;
+      --rose-pale:#fdf0f3;--rose-faint:#fff7f9;
+      --dark:#1e0d12;--dark-2:#2d1520;--dark-3:#3d2030;
+      --text:#1e0d12;--text-mid:#6b3a47;--text-soft:#a07080;
+      --white:#fff;--surface:#fffbfc;--border:#f0dde3;--border-dark:#e0c5ce;
+      --green:#2d9e6b;--red:#e05050;
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'DM Sans',sans-serif;background:var(--rose-faint);color:var(--text);min-height:100vh}
+    ::-webkit-scrollbar{width:5px}
+    ::-webkit-scrollbar-thumb{background:var(--rose-light);border-radius:3px}
+
+    /* ── LOGIN ── */
+    #login-screen{
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;
+      background:linear-gradient(135deg,var(--dark) 0%,var(--dark-2) 60%,#4a1828 100%);
+    }
+    .login-card{
+      background:rgba(255,247,249,0.05);
+      border:1px solid rgba(255,255,255,0.08);
+      backdrop-filter:blur(20px);
+      border-radius:28px;padding:3rem 2.5rem;
+      width:100%;max-width:380px;text-align:center;
+    }
+    .login-logo{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--rose);margin-bottom:0.3rem}
+    .login-logo em{font-style:italic;font-weight:500;color:var(--rose-light)}
+    .login-sub{font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:2rem}
+    .login-label{display:block;text-align:left;font-size:0.75rem;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem}
+    .login-input{
+      width:100%;background:rgba(255,255,255,0.07);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:12px;padding:0.8rem 1rem;
+      color:white;font-size:0.95rem;font-family:'DM Sans',sans-serif;
+      margin-bottom:1rem;outline:none;transition:border-color 0.2s;
+    }
+    .login-input:focus{border-color:var(--rose)}
+    .login-btn{
+      width:100%;background:var(--rose);color:white;border:none;
+      border-radius:12px;padding:0.9rem;font-size:0.95rem;
+      font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;
+      transition:all 0.2s;margin-top:0.5rem;
+    }
+    .login-btn:hover{background:var(--rose-mid);transform:translateY(-1px)}
+    .login-error{color:#ff8080;font-size:0.82rem;margin-top:0.5rem;display:none}
+
+    /* ── ADMIN SHELL ── */
+    #admin-shell{display:none;min-height:100vh;flex-direction:column}
+
+    /* Top bar */
+    .admin-topbar{
+      background:var(--dark);
+      padding:0.9rem 2rem;
+      display:flex;align-items:center;justify-content:space-between;
+      position:sticky;top:0;z-index:100;
+      border-bottom:1px solid var(--dark-3);
+    }
+    .admin-topbar-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--rose)}
+    .admin-topbar-logo em{font-style:italic;color:var(--rose-light)}
+    .admin-topbar-right{display:flex;align-items:center;gap:0.8rem}
+    .topbar-badge{background:rgba(201,96,122,0.15);border:1px solid rgba(201,96,122,0.3);border-radius:20px;padding:0.3rem 0.9rem;font-size:0.75rem;color:var(--rose-light);font-weight:500}
+    .topbar-badge.saving{background:rgba(245,166,35,0.15);border-color:rgba(245,166,35,0.3);color:#f5a623}
+    .topbar-badge.saved{background:rgba(45,158,107,0.15);border-color:rgba(45,158,107,0.3);color:#2d9e6b}
+    .topbar-badge.error{background:rgba(224,80,80,0.15);border-color:rgba(224,80,80,0.3);color:#e05050}
+    .btn-logout{background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);border-radius:8px;padding:0.35rem 0.8rem;font-size:0.78rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:0.2s}
+    .btn-logout:hover{border-color:var(--rose);color:var(--rose)}
+    .btn-preview{display:inline-flex;align-items:center;gap:0.4rem;background:var(--rose);color:white;border:none;border-radius:8px;padding:0.4rem 1rem;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:0.2s}
+    .btn-preview:hover{background:var(--rose-mid)}
+
+    /* Layout */
+    .admin-body{display:flex;flex:1}
+
+    /* Sidebar */
+    .admin-sidebar{
+      width:220px;min-height:calc(100vh - 56px);
+      background:var(--white);border-right:1px solid var(--border);
+      padding:1.5rem 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;
+    }
+    .sidebar-section{padding:0 1rem;margin-bottom:0.3rem}
+    .sidebar-label{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-soft);padding:0 0.8rem;margin-bottom:0.4rem;display:block}
+    .sidebar-btn{
+      display:flex;align-items:center;gap:0.7rem;
+      width:100%;background:none;border:none;
+      padding:0.65rem 0.8rem;border-radius:10px;
+      font-size:0.87rem;font-weight:500;color:var(--text-mid);
+      cursor:pointer;font-family:'DM Sans',sans-serif;
+      transition:all 0.18s;text-align:left;
+    }
+    .sidebar-btn:hover{background:var(--rose-pale);color:var(--rose)}
+    .sidebar-btn.active{background:var(--rose-pale);color:var(--rose);font-weight:600}
+    .sidebar-btn i{width:18px;text-align:center;font-size:0.9rem}
+
+    /* Main content */
+    .admin-main{flex:1;padding:2rem;max-width:860px}
+
+    /* Panels */
+    .panel{display:none;animation:fadeUp 0.3s ease}
+    .panel.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Panel header */
+    .panel-header{margin-bottom:1.8rem}
+    .panel-title{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--text)}
+    .panel-sub{font-size:0.85rem;color:var(--text-soft);margin-top:0.3rem;font-weight:300}
+
+    /* Cards */
+    .card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.2rem}
+    .card-title{font-size:0.78rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--rose);margin-bottom:1.2rem;display:flex;align-items:center;gap:0.5rem}
+
+    /* Form elements */
+    .field{margin-bottom:1.1rem}
+    .field label{display:block;font-size:0.78rem;font-weight:600;color:var(--text-mid);margin-bottom:0.4rem;letter-spacing:0.03em}
+    .field input,.field textarea,.field select{
+      width:100%;background:var(--rose-faint);
+      border:1.5px solid var(--border);border-radius:10px;
+      padding:0.7rem 0.9rem;font-size:0.9rem;
+      font-family:'DM Sans',sans-serif;color:var(--text);
+      outline:none;transition:border-color 0.2s;
+    }
+    .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--rose);background:var(--white)}
+    .field textarea{resize:vertical;min-height:80px}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.8rem}
+
+    /* Buttons */
+    .btn-save{
+      display:inline-flex;align-items:center;gap:0.5rem;
+      background:var(--rose);color:white;border:none;border-radius:30px;
+      padding:0.65rem 1.8rem;font-size:0.88rem;font-weight:600;
+      font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;
+    }
+    .btn-save:hover{background:var(--rose-mid);transform:translateY(-1px)}
+    .btn-add{
+      display:inline-flex;align-items:center;gap:0.5rem;
+      background:var(--rose-pale);color:var(--rose);
+      border:1.5px dashed var(--border-dark);border-radius:12px;
+      padding:0.6rem 1.2rem;font-size:0.85rem;font-weight:600;
+      font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;width:100%;justify-content:center;margin-top:0.8rem;
+    }
+    .btn-add:hover{border-color:var(--rose);background:var(--rose-pale)}
+    .btn-del{
+      background:none;border:none;color:var(--text-soft);cursor:pointer;
+      font-size:1rem;padding:0.3rem;border-radius:6px;transition:0.2s;line-height:1;
+    }
+    .btn-del:hover{color:var(--red);background:rgba(224,80,80,0.08)}
+
+    /* List items */
+    .list-item{
+      display:flex;align-items:flex-start;gap:0.8rem;
+      background:var(--rose-faint);border:1px solid var(--border);
+      border-radius:12px;padding:1rem;margin-bottom:0.7rem;
+    }
+    .list-item-body{flex:1}
+    .list-item-body input,.list-item-body textarea{
+      background:var(--white);border:1px solid var(--border);
+      border-radius:8px;padding:0.5rem 0.7rem;
+      font-size:0.85rem;font-family:'DM Sans',sans-serif;color:var(--text);
+      width:100%;margin-bottom:0.4rem;outline:none;transition:0.2s;
+    }
+    .list-item-body input:focus,.list-item-body textarea:focus{border-color:var(--rose)}
+    .list-item-body textarea{min-height:60px;resize:vertical}
+
+    /* Galería */
+    .galeria-admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-bottom:1rem}
+    .galeria-admin-item{
+      position:relative;border-radius:12px;overflow:hidden;
+      aspect-ratio:1/1;background:var(--rose-pale);border:1px solid var(--border);
+    }
+    .galeria-admin-item img{width:100%;height:100%;object-fit:cover;display:block}
+    .galeria-admin-item .item-overlay{
+      position:absolute;inset:0;background:rgba(30,13,18,0.7);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:0.4rem;opacity:0;transition:0.25s;
+    }
+    .galeria-admin-item:hover .item-overlay{opacity:1}
+    .item-overlay span{color:white;font-size:0.72rem;font-weight:500;text-align:center;padding:0 0.5rem}
+    .item-overlay button{background:var(--red);color:white;border:none;border-radius:6px;padding:0.3rem 0.7rem;font-size:0.75rem;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+    /* Toast */
+    .toast{
+      position:fixed;bottom:2rem;right:2rem;
+      background:var(--dark);color:white;
+      border-radius:12px;padding:0.9rem 1.4rem;
+      font-size:0.88rem;font-weight:500;
+      display:flex;align-items:center;gap:0.6rem;
+      box-shadow:0 8px 32px rgba(0,0,0,0.3);
+      transform:translateY(80px);opacity:0;
+      transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      z-index:9999;
+    }
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast i{color:var(--rose-light)}
+
+    /* Stars selector */
+    .stars-selector{display:flex;gap:0.3rem}
+    .star-btn{background:none;border:none;font-size:1.3rem;cursor:pointer;color:#ddd;transition:0.15s;padding:0 2px}
+    .star-btn.on{color:#f5a623}
+
+    /* Precio item admin */
+    .precio-admin-item{
+      display:grid;grid-template-columns:1fr auto auto;gap:0.6rem;align-items:center;
+      background:var(--rose-faint);border:1px solid var(--border);border-radius:10px;
+      padding:0.7rem 0.9rem;margin-bottom:0.5rem;
+    }
+    .precio-admin-item input{
+      background:var(--white);border:1px solid var(--border);border-radius:7px;
+      padding:0.4rem 0.6rem;font-size:0.85rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;width:100%;
+    }
+    .precio-admin-item input:focus{border-color:var(--rose)}
+    .precio-cat-header{
+      display:flex;align-items:center;justify-content:space-between;
+      background:var(--rose-pale);border:1px solid var(--border);
+      border-radius:12px;padding:0.8rem 1rem;margin-bottom:0.6rem;cursor:pointer;
+    }
+    .precio-cat-header span{font-weight:600;font-size:0.9rem;color:var(--text)}
+    .precio-cat-body{margin-bottom:1rem;display:none}
+    .precio-cat-body.open{display:block}
+
+    /* Upload zone */
+    .upload-zone{
+      border:2px dashed var(--border-dark);border-radius:14px;
+      padding:2rem;text-align:center;cursor:pointer;transition:0.2s;
+      background:var(--rose-faint);margin-bottom:1rem;
+    }
+    .upload-zone:hover{border-color:var(--rose);background:var(--rose-pale)}
+    .upload-zone i{font-size:2rem;color:var(--rose-light);margin-bottom:0.5rem;display:block}
+    .upload-zone p{font-size:0.85rem;color:var(--text-soft)}
+    .upload-zone input{display:none}
+    #upload-preview-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-top:0.8rem}
+    .upload-thumb{border-radius:8px;overflow:hidden;aspect-ratio:1;border:1px solid var(--border)}
+    .upload-thumb img{width:100%;height:100%;object-fit:cover}
+
+    /* Mobile nav select */
+    .mobile-nav-select{
+      display:none;
+      padding:0.8rem 1rem;
+      background:var(--white);
+      border-bottom:1px solid var(--border);
+      position:sticky;top:56px;z-index:90;
+    }
+    .mobile-nav-select select{
+      width:100%;background:var(--rose-pale);
+      border:1.5px solid var(--border-dark);
+      border-radius:12px;padding:0.75rem 1rem;
+      font-size:0.95rem;font-weight:600;
+      font-family:'DM Sans',sans-serif;
+      color:var(--rose);outline:none;
+      -webkit-appearance:none;appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9607a' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:right 1rem center;
+      padding-right:2.5rem;cursor:pointer;
+    }
+    /* Responsive */
+    @media(max-width:700px){
+      .admin-sidebar{display:none}
+      .mobile-nav-select{display:block}
+      .field-row,.field-row-3{grid-template-columns:1fr}
+      .galeria-admin-grid{grid-template-columns:repeat(2,1fr)}
+      #upload-preview-grid{grid-template-columns:repeat(3,1fr)}
+      .admin-main{padding:1.2rem}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">Papeli <em>Studio</em></div>
+    <div class="login-sub">Panel de administración</div>
+    <label class="login-label">Contraseña</label>
+    <input class="login-input" type="password" id="pw-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()"><i class="fas fa-lock"></i> Ingresar</button>
+    <div class="login-error" id="login-error">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- ── ADMIN ── -->
+<div id="admin-shell">
+
+  <!-- Top bar -->
+  <div class="admin-topbar">
+    <div class="admin-topbar-logo">Papeli <em>Studio</em></div>
+    <div class="admin-topbar-right">
+      <span class="topbar-badge" id="gh-status"><span id="gh-status-txt">● Listo</span></span>
+      <a href="index.html" target="_blank" class="btn-preview"><i class="fas fa-eye"></i> Ver sitio</a>
+      <button class="btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Salir</button>
+    </div>
+  </div>
+
+  <!-- Mobile nav selector -->
+  <div class="mobile-nav-select">
+    <select onchange="showPanel(this.value, null)">
+      <option value="info">🏪 Mi negocio</option>
+      <option value="hero">🏠 Portada</option>
+      <option value="servicios">✂️ Servicios</option>
+      <option value="galeria">🖼️ Galería</option>
+      <option value="precios">🏷️ Precios</option>
+      <option value="testimonios">⭐ Testimonios</option>
+    </select>
+  </div>
+
+  <div class="admin-body">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-section">
+        <span class="sidebar-label">General</span>
+        <button class="sidebar-btn active" onclick="showPanel('info',this)"><i class="fas fa-store"></i> Mi negocio</button>
+        <button class="sidebar-btn" onclick="showPanel('hero',this)"><i class="fas fa-home"></i> Portada</button>
+      </div>
+      <div class="sidebar-section" style="margin-top:1.2rem">
+        <span class="sidebar-label">Contenido</span>
+        <button class="sidebar-btn" onclick="showPanel('servicios',this)"><i class="fas fa-magic"></i> Servicios</button>
+        <button class="sidebar-btn" onclick="showPanel('galeria',this)"><i class="fas fa-images"></i> Galería</button>
+        <button class="sidebar-btn" onclick="showPanel('precios',this)"><i class="fas fa-tag"></i> Precios</button>
+        <button class="sidebar-btn" onclick="showPanel('testimonios',this)"><i class="fas fa-star"></i> Testimonios</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="admin-main">
+
+      <!-- ── PANEL: MI NEGOCIO ── -->
+      <div class="panel active" id="panel-info">
+        <div class="panel-header">
+          <div class="panel-title">Mi negocio</div>
+          <div class="panel-sub">Información general que aparece en todo el sitio</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-store"></i> Datos principales</div>
+          <div class="field-row">
+            <div class="field"><label>Nombre del negocio</label><input id="neg-nombre" type="text"></div>
+            <div class="field"><label>Slogan</label><input id="neg-slogan" type="text"></div>
+          </div>
+          <div class="field"><label>Descripción breve</label><textarea id="neg-desc"></textarea></div>
+          <div class="field-row">
+            <div class="field"><label>Dirección</label><input id="neg-dir" type="text"></div>
+            <div class="field"><label>Horario de atención</label><input id="neg-horario" type="text"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Teléfono WhatsApp (sin +)</label><input id="neg-tel" type="text" placeholder="56965929120"></div>
+            <div class="field"><label>Usuario Instagram (sin @)</label><input id="neg-ig" type="text" placeholder="papelistudiocl"></div>
+          </div>
+        </div>
+        <button class="btn-save" onclick="saveInfo()"><i class="fas fa-save"></i> Guardar cambios</button>
+      </div>
+
+      <!-- ── PANEL: PORTADA ── -->
+      <div class="panel" id="panel-hero">
+        <div class="panel-header">
+          <div class="panel-title">Portada</div>
+          <div class="panel-sub">El primer bloque que ven los visitantes</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-heading"></i> Textos principales</div>
+          <div class="field"><label>Etiqueta pequeña (arriba del título)</label><input id="hero-tag" type="text"></div>
+          <div class="field-row-3">
+            <div class="field"><label>Título línea 1</label><input id="hero-t1" type="text"></div>
+            <div class="field"><label>Título destacado (cursiva)</label><input id="hero-t2" type="text"></div>
+            <div class="field"><label>Título línea 3</label><input id="hero-t3" type="text"></div>
+          </div>
+          <div class="field"><label>Párrafo descriptivo</label><textarea id="hero-desc"></textarea></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-chart-bar"></i> Estadísticas (tarjeta)</div>
+          <div class="field-row-3">
+            <div class="field"><label>Número 1</label><input id="stat1-num" type="text"></div>
+            <div class="field"><label>Número 2</label><input id="stat2-num" type="text"></div>
+            <div class="field"><label>Número 3 / emoji</label><input id="stat3-num" type="text"></div>
+          </div>
+          <div class="field-row-3">
+            <div class="field"><label>Etiqueta 1</label><input id="stat1-lbl" type="text"></div>
+            <div class="field"><label>Etiqueta 2</label><input id="stat2-lbl" type="text"></div>
+            <div class="field"><label>Etiqueta 3</label><input id="stat3-lbl" type="text"></div>
+          </div>
+        </div>
+        <button class="btn-save" onclick="saveHero()"><i class="fas fa-save"></i> Guardar cambios</button>
+      </div>
+
+      <!-- ── PANEL: SERVICIOS ── -->
+      <div class="panel" id="panel-servicios">
+        <div class="panel-header">
+          <div class="panel-title">Servicios</div>
+          <div class="panel-sub">Máximo 4 servicios recomendado</div>
+        </div>
+        <div id="servicios-list"></div>
+        <button class="btn-add" onclick="addServicio()"><i class="fas fa-plus"></i> Agregar servicio</button>
+        <br><br>
+        <button class="btn-save" onclick="saveServicios()"><i class="fas fa-save"></i> Guardar cambios</button>
+      </div>
+
+      <!-- ── PANEL: GALERÍA ── -->
+      <div class="panel" id="panel-galeria">
+        <div class="panel-header">
+          <div class="panel-title">Galería</div>
+          <div class="panel-sub">Las fotos de tus trabajos. Sube imágenes o pega URLs.</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-upload"></i> Agregar fotos</div>
+          <div class="upload-zone" onclick="document.getElementById('file-upload').click()">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Haz clic para subir fotos desde tu computador<br><small>JPG, PNG, WEBP · Máx 5MB por imagen</small></p>
+            <input type="file" id="file-upload" multiple accept="image/*" onchange="handleUpload(this)">
+          </div>
+          <div style="text-align:center;color:var(--text-soft);font-size:0.82rem;margin:0.5rem 0">— o pega una URL —</div>
+          <div style="display:flex;gap:0.6rem">
+            <input type="text" id="url-input" placeholder="https://..." style="flex:1;background:var(--rose-faint);border:1.5px solid var(--border);border-radius:10px;padding:0.65rem 0.9rem;font-size:0.88rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none">
+            <input type="text" id="url-alt" placeholder="Descripción de la foto" style="flex:1;background:var(--rose-faint);border:1.5px solid var(--border);border-radius:10px;padding:0.65rem 0.9rem;font-size:0.88rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none">
+            <input type="text" id="url-cat" placeholder="Categoría" style="width:140px;background:var(--rose-faint);border:1.5px solid var(--border);border-radius:10px;padding:0.65rem 0.9rem;font-size:0.88rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none">
+            <button class="btn-save" onclick="addUrlFoto()" style="white-space:nowrap"><i class="fas fa-plus"></i> Agregar</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="fas fa-th"></i> Fotos actuales</div>
+          <div class="galeria-admin-grid" id="galeria-admin-grid"></div>
+        </div>
+        <button class="btn-save" onclick="saveGaleria()"><i class="fas fa-save"></i> Guardar cambios</button>
+      </div>
+
+      <!-- ── PANEL: PRECIOS ── -->
+      <div class="panel" id="panel-precios">
+        <div class="panel-header">
+          <div class="panel-title">Precios</div>
+          <div class="panel-sub">Categorías y productos con su precio en CLP</div>
+        </div>
+        <div id="precios-admin-list"></div>
+        <button class="btn-add" onclick="addCategoria()"><i class="fas fa-folder-plus"></i> Nueva categoría</button>
+        <br><br>
+        <button class="btn-save" onclick="savePrecios()"><i class="fas fa-save"></i> Guardar cambios</button>
+      </div>
+
+      <!-- ── PANEL: TESTIMONIOS ── -->
+      <div class="panel" id="panel-testimonios">
+        <div class="panel-header">
+          <div class="panel-title">Testimonios</div>
+          <div class="panel-sub">Agrega los comentarios reales de tus clientes</div>
+        </div>
+        <div id="testi-list"></div>
+        <button class="btn-add" onclick="addTestimonio()"><i class="fas fa-plus"></i> Agregar testimonio</button>
+        <br><br>
+        <button class="btn-save" onclick="saveTestimonios()"><i class="fas fa-save"></i> Guardar cambios</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
+
+<!-- Data -->
+<script src="data.js"></script>
+<script>
+// ── CONTRASEÑA ──
+const PASSWORD = 'papeli2026';
+
+function doLogin(){
+  const v = document.getElementById('pw-input').value;
+  if(v === PASSWORD){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-shell').style.display='flex';
+    loadAll();
+  } else {
+    document.getElementById('login-error').style.display='block';
+    document.getElementById('pw-input').value='';
+  }
+}
+function logout(){
+  document.getElementById('admin-shell').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('pw-input').value='';
+}
+
+// ── STORAGE ──
+// Lee desde localStorage como caché local, fallback a data.js
+function getData(){
+  const saved = localStorage.getItem('papeli_data');
+  return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(PAPELI_DATA));
+}
+// Guarda local (caché) + publica en GitHub vía Netlify Function
+function setData(d){ localStorage.setItem('papeli_data', JSON.stringify(d)); }
+
+async function publishToGitHub(d){
+  setData(d);
+  setBadge('saving');
+  try {
+    const res = await fetch('/.netlify/functions/save-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: d }),
+    });
+    const json = await res.json();
+    if(res.ok && json.ok){
+      setBadge('saved');
+      toast('✅ Guardado y publicado en el sitio');
+      setTimeout(()=>setBadge('ok'), 4000);
+    } else {
+      setBadge('error');
+      toast('❌ Error al publicar: ' + (json.error||'intenta de nuevo'));
+    }
+  } catch(e){
+    setBadge('error');
+    toast('❌ Sin conexión — cambios guardados localmente');
+  }
+}
+
+function setBadge(state){
+  const badge = document.getElementById('gh-status');
+  const txt   = document.getElementById('gh-status-txt');
+  if(!badge) return;
+  badge.className = 'topbar-badge';
+  if(state==='saving'){ badge.classList.add('saving'); txt.textContent='Publicando...'; }
+  if(state==='saved') { badge.classList.add('saved');  txt.textContent='✓ Publicado'; }
+  if(state==='error') { badge.classList.add('error');  txt.textContent='⚠ Error'; }
+  if(state==='ok')    { txt.textContent='● Listo'; }
+}
+
+// ── PANEL SWITCH ──
+function showPanel(name, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  // Sincronizar el select móvil
+  const sel = document.querySelector('.mobile-nav-select select');
+  if(sel) sel.value = name;
+  // Scroll al top del contenido
+  document.querySelector('.admin-main').scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+// ── TOAST ──
+function toast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ── LOAD ALL ──
+function loadAll(){
+  const d=getData();
+  loadInfo(d); loadHero(d); loadServicios(d);
+  loadGaleria(d); loadPrecios(d); loadTestimonios(d);
+}
+
+// ── INFO ──
+function loadInfo(d){
+  const n=d.negocio;
+  document.getElementById('neg-nombre').value=n.nombre||'';
+  document.getElementById('neg-slogan').value=n.slogan||'';
+  document.getElementById('neg-desc').value=n.descripcion||'';
+  document.getElementById('neg-dir').value=n.direccion||'';
+  document.getElementById('neg-horario').value=n.horario||'';
+  document.getElementById('neg-tel').value=n.telefono||'';
+  document.getElementById('neg-ig').value=n.instagram||'';
+}
+function saveInfo(){
+  const d=getData();
+  d.negocio.nombre=document.getElementById('neg-nombre').value;
+  d.negocio.slogan=document.getElementById('neg-slogan').value;
+  d.negocio.descripcion=document.getElementById('neg-desc').value;
+  d.negocio.direccion=document.getElementById('neg-dir').value;
+  d.negocio.horario=document.getElementById('neg-horario').value;
+  d.negocio.telefono=document.getElementById('neg-tel').value;
+  d.negocio.instagram=document.getElementById('neg-ig').value;
+  publishToGitHub(d);
+}
+
+// ── HERO ──
+function loadHero(d){
+  const h=d.hero;
+  document.getElementById('hero-tag').value=h.tag||'';
+  document.getElementById('hero-t1').value=h.titulo1||'';
+  document.getElementById('hero-t2').value=h.titulo2||'';
+  document.getElementById('hero-t3').value=h.titulo3||'';
+  document.getElementById('hero-desc').value=h.descripcion||'';
+  document.getElementById('stat1-num').value=h.stat1?.numero||'';
+  document.getElementById('stat2-num').value=h.stat2?.numero||'';
+  document.getElementById('stat3-num').value=h.stat3?.numero||'';
+  document.getElementById('stat1-lbl').value=h.stat1?.label||'';
+  document.getElementById('stat2-lbl').value=h.stat2?.label||'';
+  document.getElementById('stat3-lbl').value=h.stat3?.label||'';
+}
+function saveHero(){
+  const d=getData();
+  d.hero.tag=document.getElementById('hero-tag').value;
+  d.hero.titulo1=document.getElementById('hero-t1').value;
+  d.hero.titulo2=document.getElementById('hero-t2').value;
+  d.hero.titulo3=document.getElementById('hero-t3').value;
+  d.hero.descripcion=document.getElementById('hero-desc').value;
+  d.hero.stat1={numero:document.getElementById('stat1-num').value,label:document.getElementById('stat1-lbl').value};
+  d.hero.stat2={numero:document.getElementById('stat2-num').value,label:document.getElementById('stat2-lbl').value};
+  d.hero.stat3={numero:document.getElementById('stat3-num').value,label:document.getElementById('stat3-lbl').value};
+  publishToGitHub(d);
+}
+
+// ── SERVICIOS ──
+function loadServicios(d){
+  const list=document.getElementById('servicios-list');
+  list.innerHTML='';
+  d.servicios.forEach((s,i)=>{ list.innerHTML+=servicioHTML(s,i); });
+}
+function servicioHTML(s,i){
+  return `<div class="list-item" id="srv-${i}">
+    <div class="list-item-body">
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.4rem">
+        <input type="text" placeholder="Emoji icono" value="${s.icono||''}" style="width:80px" id="srv-ico-${i}">
+        <input type="text" placeholder="Nombre del servicio" value="${s.nombre||''}" style="flex:1" id="srv-nom-${i}">
+        <input type="text" placeholder="Etiqueta" value="${s.etiqueta||''}" style="width:120px" id="srv-etq-${i}">
+      </div>
+      <textarea placeholder="Descripción..." id="srv-desc-${i}">${s.descripcion||''}</textarea>
+    </div>
+    <button class="btn-del" onclick="delServicio(${i})" title="Eliminar"><i class="fas fa-trash"></i></button>
+  </div>`;
+}
+function addServicio(){
+  const d=getData();
+  d.servicios.push({icono:'✨',nombre:'Nuevo servicio',descripcion:'Descripción del servicio',etiqueta:'Nuevo'});
+  setData(d); loadServicios(d);
+}
+function delServicio(i){
+  const d=getData(); d.servicios.splice(i,1); setData(d); loadServicios(d);
+}
+function saveServicios(){
+  const d=getData();
+  d.servicios=d.servicios.map((_,i)=>({
+    icono:document.getElementById(`srv-ico-${i}`)?.value||'',
+    nombre:document.getElementById(`srv-nom-${i}`)?.value||'',
+    descripcion:document.getElementById(`srv-desc-${i}`)?.value||'',
+    etiqueta:document.getElementById(`srv-etq-${i}`)?.value||'',
+  }));
+  publishToGitHub(d);
+}
+
+// ── GALERÍA ──
+function loadGaleria(d){
+  const grid=document.getElementById('galeria-admin-grid');
+  grid.innerHTML='';
+  d.galeria.forEach((g,i)=>{
+    grid.innerHTML+=`<div class="galeria-admin-item">
+      <img src="${g.src}" alt="${g.alt}" onerror="this.src='https://placehold.co/200x200/fdf0f3/c9607a?text=Error'">
+      <div class="item-overlay">
+        <span>${g.alt}</span>
+        <span style="color:var(--rose-light);font-size:0.68rem">${g.categoria}</span>
+        <button onclick="delFoto(${i})"><i class="fas fa-trash"></i> Eliminar</button>
+      </div>
+    </div>`;
+  });
+}
+function handleUpload(input){
+  const d=getData();
+  const files=Array.from(input.files);
+  let loaded=0;
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const cat=prompt('¿Categoría de esta foto?','General')||'General';
+      d.galeria.push({src:e.target.result,alt:file.name.replace(/\.[^.]+$/,''),categoria:cat});
+      loaded++;
+      if(loaded===files.length){ setData(d); loadGaleria(d); toast(`✅ ${files.length} foto(s) agregada(s)`); }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+function addUrlFoto(){
+  const url=document.getElementById('url-input').value.trim();
+  const alt=document.getElementById('url-alt').value.trim()||'Foto';
+  const cat=document.getElementById('url-cat').value.trim()||'General';
+  if(!url){ toast('⚠️ Pega una URL primero'); return; }
+  const d=getData();
+  d.galeria.push({src:url,alt,categoria:cat});
+  setData(d); loadGaleria(d);
+  document.getElementById('url-input').value='';
+  document.getElementById('url-alt').value='';
+  document.getElementById('url-cat').value='';
+  toast('✅ Foto agregada');
+}
+function delFoto(i){
+  if(!confirm('¿Eliminar esta foto?')) return;
+  const d=getData(); d.galeria.splice(i,1); setData(d); loadGaleria(d);
+}
+function saveGaleria(){ publishToGitHub(getData()); }
+
+// ── PRECIOS ──
+function loadPrecios(d){
+  const list=document.getElementById('precios-admin-list');
+  list.innerHTML='';
+  d.precios.forEach((cat,ci)=>{
+    list.innerHTML+=`
+      <div class="card" id="pcat-${ci}">
+        <div class="precio-cat-header" onclick="toggleCat(${ci})">
+          <input type="text" value="${cat.categoria}" id="pcat-nom-${ci}"
+            onclick="event.stopPropagation()"
+            style="background:none;border:none;font-weight:600;font-size:0.9rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;width:100%">
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <button class="btn-del" onclick="event.stopPropagation();delCategoria(${ci})" title="Eliminar categoría"><i class="fas fa-trash"></i></button>
+            <i class="fas fa-chevron-down" style="color:var(--text-soft);font-size:0.8rem"></i>
+          </div>
+        </div>
+        <div class="precio-cat-body open" id="pbody-${ci}">
+          <div id="pitems-${ci}">
+            ${cat.items.map((it,ii)=>precioItemHTML(ci,ii,it)).join('')}
+          </div>
+          <button class="btn-add" style="margin-top:0.4rem" onclick="addPrecioItem(${ci})"><i class="fas fa-plus"></i> Agregar producto</button>
+        </div>
+      </div>`;
+  });
+}
+function precioItemHTML(ci,ii,it){
+  return `<div class="precio-admin-item" id="pitem-${ci}-${ii}">
+    <input type="text" value="${it.nombre}" id="pnom-${ci}-${ii}" placeholder="Nombre del producto">
+    <input type="number" value="${it.precio}" id="ppre-${ci}-${ii}" placeholder="Precio" style="width:110px">
+    <button class="btn-del" onclick="delPrecioItem(${ci},${ii})"><i class="fas fa-times"></i></button>
+  </div>`;
+}
+function toggleCat(ci){
+  const b=document.getElementById(`pbody-${ci}`);
+  b.classList.toggle('open');
+}
+function addCategoria(){
+  const d=getData();
+  d.precios.push({categoria:'Nueva categoría',items:[{nombre:'Producto',precio:0}]});
+  setData(d); loadPrecios(d);
+}
+function delCategoria(ci){
+  if(!confirm('¿Eliminar esta categoría y todos sus productos?')) return;
+  const d=getData(); d.precios.splice(ci,1); setData(d); loadPrecios(d);
+}
+function addPrecioItem(ci){
+  const d=getData();
+  d.precios[ci].items.push({nombre:'Nuevo producto',precio:0});
+  setData(d); loadPrecios(d);
+}
+function delPrecioItem(ci,ii){
+  const d=getData(); d.precios[ci].items.splice(ii,1); setData(d); loadPrecios(d);
+}
+function savePrecios(){
+  const d=getData();
+  d.precios=d.precios.map((cat,ci)=>({
+    categoria:document.getElementById(`pcat-nom-${ci}`)?.value||cat.categoria,
+    items:cat.items.map((_,ii)=>({
+      nombre:document.getElementById(`pnom-${ci}-${ii}`)?.value||'',
+      precio:Number(document.getElementById(`ppre-${ci}-${ii}`)?.value)||0,
+    }))
+  }));
+  publishToGitHub(d);
+}
+
+// ── TESTIMONIOS ──
+function loadTestimonios(d){
+  const list=document.getElementById('testi-list');
+  list.innerHTML='';
+  d.testimonios.forEach((t,i)=>{ list.innerHTML+=testiHTML(t,i); });
+  d.testimonios.forEach((_,i)=>setStars(i,d.testimonios[i].estrellas||5));
+}
+function testiHTML(t,i){
+  return `<div class="list-item" id="testi-${i}">
+    <div class="list-item-body">
+      <input type="text" placeholder="Nombre del cliente" value="${t.nombre||''}" id="tnom-${i}">
+      <textarea placeholder="Comentario del cliente..." id="ttxt-${i}">${t.texto||''}</textarea>
+      <div class="stars-selector" id="stars-${i}">
+        ${[1,2,3,4,5].map(s=>`<button class="star-btn" onclick="setStars(${i},${s})">★</button>`).join('')}
+      </div>
+    </div>
+    <button class="btn-del" onclick="delTestimonio(${i})" title="Eliminar"><i class="fas fa-trash"></i></button>
+  </div>`;
+}
+function setStars(i,n){
+  const btns=document.querySelectorAll(`#stars-${i} .star-btn`);
+  btns.forEach((b,idx)=>b.classList.toggle('on',idx<n));
+  const d=getData(); if(d.testimonios[i]) d.testimonios[i].estrellas=n; setData(d);
+}
+function addTestimonio(){
+  const d=getData();
+  d.testimonios.push({nombre:'',texto:'',estrellas:5});
+  setData(d); loadTestimonios(d);
+}
+function delTestimonio(i){
+  const d=getData(); d.testimonios.splice(i,1); setData(d); loadTestimonios(d);
+}
+function saveTestimonios(){
+  const d=getData();
+  d.testimonios=d.testimonios.map((t,i)=>({
+    nombre:document.getElementById(`tnom-${i}`)?.value||'',
+    texto:document.getElementById(`ttxt-${i}`)?.value||'',
+    estrellas:t.estrellas||5,
+  }));
+  publishToGitHub(d);
+}
+</script>
+</body>
+</html>

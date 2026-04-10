@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Papeli Studio | Papelería Creativa · Temuco</title>
+  <meta name="description" content="Papelería creativa, sublimación, regalos personalizados y material corporativo. Hecho con amor desde Temuco, Araucanía.">
+  <meta name="theme-color" content="#c9607a">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --rose: #c9607a; --rose-mid: #b85570; --rose-light: #e8a0b4;
+      --rose-pale: #fdf0f3; --rose-faint: #fff7f9;
+      --dark: #1e0d12; --dark-2: #2d1520;
+      --text: #1e0d12; --text-mid: #6b3a47; --text-soft: #a07080;
+      --white: #ffffff; --surface: #fffbfc; --border: #f0dde3; --border-dark: #e0c5ce;
+      --nav-h: 60px; --px: 1.2rem;
+    }
+    html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--rose-light); border-radius: 2px; }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 var(--px); height: var(--nav-h);
+      background: rgba(255,251,252,0.96); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      transition: box-shadow 0.3s;
+    }
+    .nav.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--rose); letter-spacing: -0.02em; }
+    .nav-logo em { font-style: italic; font-weight: 500; color: var(--rose-light); }
+    .nav-right { display: flex; align-items: center; gap: 0.5rem; }
+    .nav-wa-pill { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--rose); color: white; border-radius: 30px; padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 600; transition: background 0.2s; }
+    .nav-wa-pill:hover { background: var(--rose-mid); }
+    .hamburger { background: none; border: none; width: 38px; height: 38px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; border-radius: 10px; transition: background 0.2s; }
+    .hamburger:hover { background: var(--rose-pale); }
+    .hamburger span { display: block; width: 20px; height: 2px; background: var(--text-mid); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Desktop nav links (hidden on mobile) */
+    .nav-desktop { display: none; list-style: none; align-items: center; gap: 0.3rem; }
+    .nav-desktop a { font-size: 0.85rem; font-weight: 500; color: var(--text-mid); padding: 0.4rem 1rem; border-radius: 30px; transition: all 0.2s; display: inline-block; }
+    .nav-desktop a:hover { background: var(--rose-pale); color: var(--rose); }
+    .nav-desktop .nav-btn { background: var(--rose); color: white !important; padding: 0.45rem 1.2rem; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .nav-desktop .nav-btn:hover { background: var(--rose-mid); }
+
+    /* Drawer */
+    .nav-drawer {
+      position: fixed; top: var(--nav-h); left: 0; right: 0;
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 0.5rem var(--px) 1.5rem; z-index: 190;
+      transform: translateY(-110%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+    .nav-drawer.open { transform: translateY(0); }
+    .drawer-link { display: flex; align-items: center; gap: 0.7rem; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); font-size: 1rem; font-weight: 500; color: var(--text-mid); transition: color 0.2s; }
+    .drawer-link:last-of-type { border-bottom: none; }
+    .drawer-link i { color: var(--rose); width: 20px; text-align: center; }
+    .drawer-link:hover { color: var(--rose); }
+    .drawer-ig { display: flex; align-items: center; gap: 0.7rem; margin-top: 1rem; background: var(--rose-pale); border: 1px solid var(--border); border-radius: 14px; padding: 0.9rem 1rem; font-size: 0.9rem; font-weight: 600; color: var(--rose); }
+
+    .nav-spacer { height: var(--nav-h); }
+
+    /* ── HERO ── */
+    .hero { padding: 2.5rem var(--px) 2rem; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 7px; background: var(--rose-pale); border: 1px solid var(--border); border-radius: 30px; padding: 0.35rem 0.9rem; font-size: 0.73rem; font-weight: 600; color: var(--rose); margin-bottom: 1.2rem; animation: fadeDown 0.5s ease both; }
+    .hero-tag-dot { width: 6px; height: 6px; background: var(--rose); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.75)} }
+    .hero-h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem,9vw,3.6rem); line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 1rem; animation: fadeUp 0.6s ease 0.1s both; }
+    .hero-h1 em { font-style: italic; color: var(--rose); display: block; }
+    .hero-p { font-size: 0.95rem; line-height: 1.7; color: var(--text-soft); font-weight: 300; margin-bottom: 1.8rem; animation: fadeUp 0.6s ease 0.2s both; }
+    .hero-btns { display: flex; flex-direction: column; gap: 0.7rem; animation: fadeUp 0.6s ease 0.3s both; }
+
+    .btn-primary { display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--rose); color: white; border: none; border-radius: 50px; padding: 1rem 2rem; font-size: 0.95rem; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.25s; width: 100%; }
+    .btn-primary:hover { background: var(--rose-mid); transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(201,96,122,.35); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-ghost { display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: transparent; color: var(--rose); border: 1.5px solid var(--border-dark); border-radius: 50px; padding: 1rem 2rem; font-size: 0.95rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; width: 100%; }
+    .btn-ghost:hover { border-color: var(--rose); background: var(--rose-pale); }
+    .btn-ghost:active { transform: scale(0.98); }
+
+    .hero-card { margin-top: 2rem; background: var(--rose-pale); border: 1px solid var(--border); border-radius: 24px; padding: 1.6rem; position: relative; animation: fadeUp 0.7s ease 0.4s both; }
+    .floating-badge { position: absolute; top: -13px; right: 20px; background: var(--dark); color: white; font-size: 0.72rem; font-weight: 600; padding: 0.35rem 0.9rem; border-radius: 30px; }
+    .hero-card-top { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+    .hero-card-icon { width: 58px; height: 58px; background: var(--rose); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; box-shadow: 0 10px 24px -6px rgba(201,96,122,.4); flex-shrink: 0; }
+    .hero-card-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; }
+    .hero-card-sub { font-size: 0.78rem; color: var(--text-soft); margin-top: 2px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.6rem; }
+    .stat-box { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 0.8rem 0.5rem; text-align: center; }
+    .stat-num { font-size: 1.3rem; font-weight: 700; color: var(--rose); font-family: 'Playfair Display', serif; }
+    .stat-lbl { font-size: 0.65rem; color: var(--text-soft); margin-top: 2px; font-weight: 500; }
+
+    /* ── STRIP ── */
+    .strip { background: var(--rose-pale); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden; }
+    .strip-track { display: flex; gap: 1.5rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 1rem var(--px); }
+    .strip-track::-webkit-scrollbar { display: none; }
+    .strip-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; font-weight: 500; color: var(--text-mid); white-space: nowrap; flex-shrink: 0; }
+    .strip-item i { color: var(--rose); font-size: 0.85rem; }
+
+    /* ── SECTIONS ── */
+    .section { padding: 3rem var(--px); }
+    .section-alt { background: var(--rose-faint); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .eyebrow { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.5rem; }
+    .sec-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,6vw,2.6rem); line-height: 1.15; color: var(--text); margin-bottom: 0.5rem; }
+    .sec-sub { font-size: 0.9rem; color: var(--text-soft); font-weight: 300; line-height: 1.6; }
+    .divider { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.8rem; }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); white-space: nowrap; }
+
+    /* ── SERVICIOS ── */
+    .services-grid { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.8rem; }
+    .srv-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; transition: all 0.3s; position: relative; overflow: hidden; }
+    .srv-card::after { content:''; position:absolute; bottom:0;left:0;right:0; height:3px; background:linear-gradient(90deg,var(--rose),var(--rose-light)); transform:scaleX(0); transition:transform 0.3s; }
+    .srv-card:hover { border-color: var(--border-dark); box-shadow: 0 12px 32px -10px rgba(201,96,122,.12); }
+    .srv-card:hover::after { transform: scaleX(1); }
+    .srv-card-top { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.8rem; }
+    .srv-ico { width: 46px; height: 46px; background: var(--rose-pale); border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; border: 1px solid var(--border); flex-shrink: 0; }
+    .srv-card h3 { font-size: 1rem; font-weight: 600; color: var(--text); }
+    .srv-pill { display: inline-block; margin-top: 3px; background: var(--rose-pale); border: 1px solid var(--border); border-radius: 20px; padding: 0.2rem 0.7rem; font-size: 0.68rem; font-weight: 600; color: var(--rose); }
+    .srv-card p { font-size: 0.85rem; color: var(--text-soft); line-height: 1.65; font-weight: 300; }
+
+    /* ── GALERÍA ── */
+    .galeria-filtros { display: flex; gap: 0.5rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 0.5rem; margin-bottom: 1.2rem; }
+    .galeria-filtros::-webkit-scrollbar { display: none; }
+    .filtro-btn { flex-shrink: 0; background: var(--white); border: 1.5px solid var(--border); border-radius: 30px; padding: 0.45rem 1rem; font-size: 0.78rem; font-weight: 500; color: var(--text-mid); cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .filtro-btn.active, .filtro-btn:hover { background: var(--rose); border-color: var(--rose); color: white; }
+    .galeria-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 0.7rem; }
+    .galeria-item { border-radius: 16px; overflow: hidden; aspect-ratio: 1/1; position: relative; cursor: pointer; background: var(--rose-pale); border: 1px solid var(--border); }
+    .galeria-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .galeria-item:hover img { transform: scale(1.06); }
+    .galeria-overlay { position: absolute; inset: 0; background: linear-gradient(to top,rgba(30,13,18,.75) 0%,transparent 55%); opacity: 0; transition: opacity 0.25s; display: flex; align-items: flex-end; padding: 0.8rem; }
+    .galeria-item:hover .galeria-overlay { opacity: 1; }
+    .galeria-overlay-text { color: white; font-size: 0.75rem; font-weight: 500; }
+    .galeria-overlay-cat { font-size: 0.65rem; color: var(--rose-light); display: block; margin-top: 2px; }
+
+    /* Lightbox */
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(30,13,18,.95); z-index: 999; align-items: center; justify-content: center; padding: 1rem; }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 100%; max-height: 82vh; border-radius: 16px; object-fit: contain; }
+    .lightbox-close { position: fixed; top: 1rem; right: 1rem; background: var(--rose); color: white; border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+
+    /* ── PRECIOS ── */
+    .precios-tabs { display: flex; gap: 0.5rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 0.3rem; margin-bottom: 1.2rem; }
+    .precios-tabs::-webkit-scrollbar { display: none; }
+    .precio-tab { flex-shrink: 0; background: var(--white); border: 1.5px solid var(--border); border-radius: 30px; padding: 0.45rem 1rem; font-size: 0.78rem; font-weight: 500; color: var(--text-mid); cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+    .precio-tab.active, .precio-tab:hover { background: var(--rose); border-color: var(--rose); color: white; }
+    .precios-panel { display: none; }
+    .precios-panel.active { display: block; animation: fadeUp 0.3s ease; }
+    .precio-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 0.6rem; transition: all 0.2s; }
+    .precio-item:hover { border-color: var(--border-dark); transform: translateX(3px); }
+    .precio-nombre { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+    .precio-valor { font-size: 1rem; font-weight: 700; color: var(--rose); font-family: 'Playfair Display', serif; white-space: nowrap; }
+    .precios-nota { margin-top: 1rem; font-size: 0.78rem; color: var(--text-soft); font-style: italic; line-height: 1.5; }
+
+    /* ── TESTIMONIOS ── */
+    .testi-scroll { display: flex; gap: 1rem; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 0.5rem; margin-top: 1.8rem; scroll-snap-type: x mandatory; }
+    .testi-scroll::-webkit-scrollbar { display: none; }
+    .testi-card { flex-shrink: 0; width: 82vw; max-width: 300px; background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 1.4rem; scroll-snap-align: start; }
+    .testi-stars { color: var(--rose); font-size: 0.88rem; letter-spacing: 2px; margin-bottom: 0.7rem; }
+    .testi-texto { font-size: 0.88rem; line-height: 1.7; color: var(--text-mid); font-weight: 300; font-style: italic; margin-bottom: 1rem; }
+    .testi-nombre { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+    .testi-dots { display: flex; justify-content: center; gap: 0.4rem; margin-top: 1.2rem; }
+    .testi-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-dark); transition: background 0.2s; cursor: pointer; border: none; }
+    .testi-dot.active { background: var(--rose); width: 18px; border-radius: 3px; }
+
+    /* ── CONTACTO ── */
+    .contact-grid { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.8rem; }
+    .c-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 1.4rem; transition: all 0.25s; display: flex; align-items: flex-start; gap: 1rem; }
+    .c-card:hover { border-color: var(--border-dark); box-shadow: 0 6px 20px -6px rgba(0,0,0,.06); }
+    .c-card-ico { width: 48px; height: 48px; background: var(--rose-pale); border-radius: 14px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .c-card h4 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 0.3rem; }
+    .c-card p { font-size: 0.82rem; color: var(--text-soft); line-height: 1.6; font-weight: 300; }
+    .c-card-btn { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.8rem; background: var(--rose); color: white; border: none; border-radius: 30px; padding: 0.45rem 1.1rem; font-size: 0.78rem; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: 0.2s; }
+    .c-card-btn:hover { background: var(--rose-mid); }
+
+    .mapa-wrap { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); margin-top: 2rem; box-shadow: 0 6px 24px -6px rgba(201,96,122,.1); }
+    .mapa-wrap iframe { width: 100%; height: 260px; border: none; display: block; }
+    .mapa-info { display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 0.8rem; font-size: 0.82rem; color: var(--text-soft); line-height: 1.5; }
+    .mapa-info i { color: var(--rose); margin-top: 2px; flex-shrink: 0; }
+
+    /* ── CTA DARK ── */
+    .cta-dark { background: var(--dark); margin: 0 var(--px) 3rem; border-radius: 24px; padding: 3rem 1.5rem; text-align: center; position: relative; overflow: hidden; }
+    .cta-dark::before { content:''; position:absolute; width:400px;height:400px; background:radial-gradient(circle,rgba(201,96,122,.18) 0%,transparent 70%); top:-150px;left:50%; transform:translateX(-50%); pointer-events:none; }
+    .cta-dark .eyebrow { color: var(--rose-light); }
+    .cta-dark .sec-title { color: white; }
+    .cta-dark .sec-sub { color: rgba(255,255,255,.5); margin: 0.8rem 0 1.8rem; font-size: 0.9rem; }
+    .cta-btns { display: flex; flex-direction: column; gap: 0.7rem; position: relative; z-index: 1; }
+    .btn-white { display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: white; color: var(--rose); border: none; border-radius: 50px; padding: 1rem 2rem; font-size: 0.92rem; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: 0.2s; }
+    .btn-white:hover { background: var(--rose-pale); }
+    .btn-outline-white { display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: transparent; color: rgba(255,255,255,.8); border: 1.5px solid rgba(255,255,255,.2); border-radius: 50px; padding: 1rem 2rem; font-size: 0.92rem; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: 0.2s; }
+    .btn-outline-white:hover { border-color: rgba(255,255,255,.5); color: white; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--rose-faint); border-top: 1px solid var(--border); padding: 2rem var(--px); }
+    .foot-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; }
+    .foot-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--rose); }
+    .foot-logo em { font-style: italic; font-weight: 500; color: var(--rose-light); }
+    .foot-slogan { font-size: 0.76rem; color: var(--text-soft); margin-top: 3px; }
+    .foot-socials { display: flex; gap: 0.5rem; }
+    .fsoc { width: 36px; height: 36px; background: var(--white); border: 1px solid var(--border); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--text-soft); font-size: 0.9rem; text-decoration: none; transition: all 0.2s; }
+    .fsoc:hover { border-color: var(--rose); color: var(--rose); background: var(--rose-pale); }
+    .foot-divider { height: 1px; background: var(--border); margin-bottom: 1.2rem; }
+    .foot-copy { font-size: 0.75rem; color: var(--text-soft); text-align: center; }
+
+    /* Sticky WA bar — mobile only */
+    .wa-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,251,252,0.97); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 0.8rem var(--px); z-index: 150; display: flex; gap: 0.7rem; }
+    .wa-bar a { flex: 1; }
+    .wa-bar .btn-primary, .wa-bar .btn-ghost { padding: 0.85rem 1rem; font-size: 0.85rem; }
+    .wa-bar-spacer { height: 78px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity 0.55s ease,transform 0.55s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal-delay-1 { transition-delay:0.1s; }
+    .reveal-delay-2 { transition-delay:0.2s; }
+
+    /* ══ TABLET ≥640px ══ */
+    @media(min-width:640px){
+      :root { --px: 2rem; }
+      .hero-btns { flex-direction: row; }
+      .btn-primary, .btn-ghost { width: auto; }
+      .services-grid { display: grid; grid-template-columns: repeat(2,1fr); }
+      .galeria-grid { grid-template-columns: repeat(3,1fr); }
+      .contact-grid { display: grid; grid-template-columns: repeat(2,1fr); }
+      .testi-card { width: 300px; }
+      .cta-btns { flex-direction: row; justify-content: center; }
+      .btn-white, .btn-outline-white { width: auto; }
+      .mapa-wrap iframe { height: 320px; }
+    }
+
+    /* ══ DESKTOP ≥1024px ══ */
+    @media(min-width:1024px){
+      :root { --px: 6%; --nav-h: 64px; }
+      .hamburger, .nav-wa-pill, .nav-drawer, .wa-bar, .wa-bar-spacer, .testi-dots { display: none !important; }
+      .nav-desktop { display: flex !important; }
+      .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; padding: 5rem var(--px); min-height: 88vh; }
+      .hero-card { margin-top: 0; }
+      .hero-btns { flex-direction: row; }
+      .btn-primary, .btn-ghost { width: auto; }
+      .section { padding: 5rem var(--px); }
+      .services-grid { grid-template-columns: repeat(2,1fr); }
+      .galeria-grid { grid-template-columns: repeat(3,1fr); gap: 1rem; }
+      .testi-scroll { display: grid !important; grid-template-columns: repeat(2,1fr); overflow: visible; scroll-snap-type: none; }
+      .testi-card { width: auto; max-width: none; }
+      .contact-grid { grid-template-columns: repeat(2,1fr); }
+      .mapa-wrap iframe { height: 380px; }
+      .cta-dark { margin: 0 var(--px) 5rem; border-radius: 32px; padding: 5rem 6%; }
+      .cta-btns { flex-direction: row; }
+      .btn-white, .btn-outline-white { width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close"><i class="fas fa-times"></i></button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <a href="#" class="nav-logo">Papeli <em>Studio</em></a>
+    <ul class="nav-desktop" id="nav-desktop">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#galeria">Galería</a></li>
+      <li><a href="#precios">Precios</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+      <li><a id="nav-ig-d" href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+      <li><a id="nav-wa-d" href="#" class="nav-btn"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+    </ul>
+    <div class="nav-right">
+      <a id="nav-wa-m" href="#" class="nav-wa-pill"><i class="fab fa-whatsapp"></i> Escribir</a>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Drawer -->
+  <div class="nav-drawer" id="nav-drawer">
+    <a href="#servicios" class="drawer-link" onclick="closeMenu()"><i class="fas fa-magic"></i> Servicios</a>
+    <a href="#galeria" class="drawer-link" onclick="closeMenu()"><i class="fas fa-images"></i> Galería</a>
+    <a href="#precios" class="drawer-link" onclick="closeMenu()"><i class="fas fa-tag"></i> Precios</a>
+    <a href="#contacto" class="drawer-link" onclick="closeMenu()"><i class="fas fa-map-marker-alt"></i> Contacto</a>
+    <a id="drawer-ig" href="#" target="_blank" rel="noopener" class="drawer-ig"><i class="fab fa-instagram"></i> Seguir en Instagram</a>
+  </div>
+
+  <div class="nav-spacer"></div>
+
+  <!-- HERO -->
+  <section class="hero" id="inicio">
+    <div>
+      <div class="hero-tag"><div class="hero-tag-dot"></div><span id="hero-tag-txt"></span></div>
+      <h1 class="hero-h1" id="hero-h1"></h1>
+      <p class="hero-p" id="hero-p"></p>
+      <div class="hero-btns">
+        <a id="hero-wa" href="#" target="_blank" rel="noopener" class="btn-primary"><i class="fab fa-whatsapp"></i> Solicitar diseño</a>
+        <a id="hero-cat" href="#" target="_blank" rel="noopener" class="btn-ghost">Ver catálogo <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    <div>
+      <div class="hero-card">
+        <div class="floating-badge">✨ Hecho con amor</div>
+        <div class="hero-card-top">
+          <div class="hero-card-icon">🎨</div>
+          <div>
+            <div class="hero-card-title">Papelería Creativa</div>
+            <div class="hero-card-sub">Diseños exclusivos para cada ocasión</div>
+          </div>
+        </div>
+        <div class="stats-grid" id="stats-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRIP -->
+  <div class="strip">
+    <div class="strip-track">
+      <div class="strip-item"><i class="fas fa-ribbon"></i> Regalos personalizados</div>
+      <div class="strip-item"><i class="fas fa-mug-hot"></i> Sublimación premium</div>
+      <div class="strip-item"><i class="fas fa-briefcase"></i> Material corporativo</div>
+      <div class="strip-item"><i class="fas fa-envelope-open-text"></i> Invitaciones artesanales</div>
+      <div class="strip-item"><i class="fas fa-calendar-alt"></i> Agendas 2026</div>
+      <div class="strip-item"><i class="fas fa-star"></i> Diseño exclusivo</div>
+      <div class="strip-item"><i class="fas fa-paint-brush"></i> Stickers escolares</div>
+      <div class="strip-item"><i class="fas fa-tags"></i> Tags personalizados</div>
+    </div>
+  </div>
+
+  <!-- SERVICIOS -->
+  <section class="section" id="servicios">
+    <div class="divider reveal"><div class="divider-line"></div><div class="divider-label">Servicios</div><div class="divider-line"></div></div>
+    <div class="reveal">
+      <div class="eyebrow">Lo que hacemos</div>
+      <h2 class="sec-title">Todo con estilo,<br>todo personalizado</h2>
+      <p class="sec-sub">Dale vida a tus ideas con papel, color y mucho cariño.</p>
+    </div>
+    <div class="services-grid" id="services-grid"></div>
+  </section>
+
+  <!-- GALERÍA -->
+  <section class="section section-alt" id="galeria">
+    <div class="divider reveal"><div class="divider-line"></div><div class="divider-label">Galería</div><div class="divider-line"></div></div>
+    <div class="reveal">
+      <div class="eyebrow">Nuestros trabajos</div>
+      <h2 class="sec-title">Lo que creamos<br>con amor</h2>
+    </div>
+    <div class="galeria-filtros reveal reveal-delay-1" id="galeria-filtros"></div>
+    <div class="galeria-grid reveal reveal-delay-2" id="galeria-grid"></div>
+  </section>
+
+  <!-- PRECIOS -->
+  <section class="section" id="precios">
+    <div class="divider reveal"><div class="divider-line"></div><div class="divider-label">Precios</div><div class="divider-line"></div></div>
+    <div class="reveal">
+      <div class="eyebrow">Catálogo de precios</div>
+      <h2 class="sec-title">Calidad a tu alcance</h2>
+      <p class="sec-sub">Precios en pesos chilenos. Consulta por pedidos en cantidad.</p>
+    </div>
+    <div class="precios-tabs reveal reveal-delay-1" id="precios-tabs"></div>
+    <div id="precios-panels" class="reveal reveal-delay-2"></div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section class="section section-alt" id="testimonios">
+    <div class="divider reveal"><div class="divider-line"></div><div class="divider-label">Testimonios</div><div class="divider-line"></div></div>
+    <div class="reveal">
+      <div class="eyebrow">Lo que dicen de nosotros</div>
+      <h2 class="sec-title">Clientes<br>felices ❤️</h2>
+    </div>
+    <div class="testi-scroll" id="testi-scroll"></div>
+    <div class="testi-dots" id="testi-dots"></div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="section" id="contacto">
+    <div class="divider reveal"><div class="divider-line"></div><div class="divider-label">Contacto</div><div class="divider-line"></div></div>
+    <div class="reveal">
+      <div class="eyebrow" id="contacto-eyebrow"></div>
+      <h2 class="sec-title">¿Creamos algo<br>juntos?</h2>
+      <p class="sec-sub">Escríbenos, mira el catálogo o síguenos en Instagram.</p>
+    </div>
+    <div class="contact-grid" id="contact-grid"></div>
+    <div class="mapa-wrap reveal">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3111.1830879541926!2d-72.64925149999999!3d-38.7595045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9614d69ca1b1ebfb%3A0x393ab133f1d413c2!2sMilano%2003365%2C%204813106%20Temuco%2C%20Araucan%C3%ADa!5e0!3m2!1ses!2scl!4v1775696358636!5m2!1ses!2scl"
+        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Papeli Studio — Milano 03365, Temuco"></iframe>
+    </div>
+    <div class="mapa-info reveal">
+      <i class="fas fa-map-marker-alt"></i>
+      <div><div id="mapa-dir" style="font-weight:500;color:var(--text-mid)"></div><div id="mapa-horario" style="margin-top:2px"></div></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-dark reveal">
+    <div class="eyebrow">Empieza hoy</div>
+    <h2 class="sec-title">¿Quieres algo hecho<br>a mano con amor?</h2>
+    <p class="sec-sub">Diseños personalizados que cuentan tu historia. Desde papel hasta sublimación. Desde Temuco para el mundo.</p>
+    <div class="cta-btns">
+      <a id="cta-wa" href="#" target="_blank" rel="noopener" class="btn-white"><i class="fab fa-whatsapp"></i> Comenzar proyecto</a>
+      <a id="cta-cat" href="#" target="_blank" rel="noopener" class="btn-outline-white">Ver catálogo <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="foot-top">
+      <div>
+        <a href="#" class="foot-logo">Papeli <em>Studio</em></a>
+        <div class="foot-slogan" id="foot-slogan"></div>
+      </div>
+      <div class="foot-socials">
+        <a id="foot-ig" href="#" target="_blank" rel="noopener" class="fsoc"><i class="fab fa-instagram"></i></a>
+        <a id="foot-wa" href="#" target="_blank" rel="noopener" class="fsoc"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="fsoc"><i class="fab fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="foot-divider"></div>
+    <div class="foot-copy" id="foot-copy"></div>
+  </footer>
+
+  <!-- WA sticky bar (mobile) -->
+  <div class="wa-bar">
+    <a id="wabar-wa" href="#" target="_blank" rel="noopener">
+      <div class="btn-primary"><i class="fab fa-whatsapp"></i> Pedir ahora</div>
+    </a>
+    <a id="wabar-ig" href="#" target="_blank" rel="noopener">
+      <div class="btn-ghost"><i class="fab fa-instagram"></i> Instagram</div>
+    </a>
+  </div>
+  <div class="wa-bar-spacer"></div>
+
+  <script src="data.js"></script>
+  <script>
+    const _s = localStorage.getItem('papeli_data');
+    const D  = _s ? JSON.parse(_s) : PAPELI_DATA;
+    const wa    = `https://wa.me/${D.negocio.telefono}`;
+    const waCat = `https://wa.me/c/${D.negocio.telefono}`;
+    const ig    = `https://www.instagram.com/${D.negocio.instagram}`;
+
+    // NAV
+    ['nav-wa-m','nav-wa-d','cta-wa','foot-wa','wabar-wa'].forEach(id => { const el=document.getElementById(id); if(el) el.href=wa; });
+    ['nav-ig-d','drawer-ig','foot-ig','wabar-ig'].forEach(id => { const el=document.getElementById(id); if(el) el.href=ig; });
+    document.getElementById('hero-wa').href  = wa;
+    document.getElementById('hero-cat').href = waCat;
+    document.getElementById('cta-cat').href  = waCat;
+
+    // HERO
+    document.getElementById('hero-tag-txt').textContent = D.hero.tag;
+    document.getElementById('hero-h1').innerHTML = `${D.hero.titulo1} <em>${D.hero.titulo2}</em> ${D.hero.titulo3}`;
+    document.getElementById('hero-p').textContent = D.hero.descripcion;
+    [D.hero.stat1, D.hero.stat2, D.hero.stat3].forEach(s => {
+      document.getElementById('stats-grid').innerHTML += `<div class="stat-box"><div class="stat-num">${s.numero}</div><div class="stat-lbl">${s.label}</div></div>`;
+    });
+
+    // SERVICIOS
+    D.servicios.forEach((s, i) => {
+      document.getElementById('services-grid').innerHTML += `
+        <div class="srv-card">
+          <div class="srv-card-top">
+            <div class="srv-ico">${s.icono}</div>
+            <div><h3>${s.nombre}</h3><div class="srv-pill">${s.etiqueta}</div></div>
+          </div>
+          <p>${s.descripcion}</p>
+        </div>`;
+    });
+
+    // GALERÍA
+    const cats = ['Todos', ...new Set(D.galeria.map(g => g.categoria))];
+    cats.forEach((c, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'filtro-btn' + (i===0?' active':'');
+      btn.textContent = c;
+      btn.onclick = () => { document.querySelectorAll('.filtro-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderGaleria(c==='Todos'?D.galeria:D.galeria.filter(g=>g.categoria===c)); };
+      document.getElementById('galeria-filtros').appendChild(btn);
+    });
+    function renderGaleria(items) {
+      document.getElementById('galeria-grid').innerHTML = items.map(item =>
+        `<div class="galeria-item" onclick="openLB('${item.src}','${item.alt}')">
+          <img src="${item.src}" alt="${item.alt}" loading="lazy">
+          <div class="galeria-overlay"><div class="galeria-overlay-text">${item.alt}<span class="galeria-overlay-cat">${item.categoria}</span></div></div>
+        </div>`).join('');
+    }
+    renderGaleria(D.galeria);
+    function openLB(src, alt) { document.getElementById('lightbox-img').src=src; document.getElementById('lightbox').classList.add('open'); document.body.style.overflow='hidden'; }
+    document.getElementById('lightbox-close').onclick = () => { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; };
+    document.getElementById('lightbox').onclick = e => { if(e.target===document.getElementById('lightbox')){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';} };
+
+    // PRECIOS
+    D.precios.forEach((cat, i) => {
+      const tab = document.createElement('button');
+      tab.className = 'precio-tab'+(i===0?' active':'');
+      tab.textContent = cat.categoria;
+      tab.onclick = () => { document.querySelectorAll('.precio-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.precios-panel').forEach(p=>p.classList.remove('active')); tab.classList.add('active'); document.getElementById(`pp-${i}`).classList.add('active'); };
+      document.getElementById('precios-tabs').appendChild(tab);
+      const panel = document.createElement('div');
+      panel.id = `pp-${i}`; panel.className = 'precios-panel'+(i===0?' active':'');
+      panel.innerHTML = cat.items.map(it=>`<div class="precio-item"><span class="precio-nombre">${it.nombre}</span><span class="precio-valor">$${it.precio.toLocaleString('es-CL')}</span></div>`).join('')+`<p class="precios-nota">* Precios referenciales. Consulta por pedidos especiales por WhatsApp.</p>`;
+      document.getElementById('precios-panels').appendChild(panel);
+    });
+
+    // TESTIMONIOS
+    const tScroll = document.getElementById('testi-scroll');
+    const tDots   = document.getElementById('testi-dots');
+    D.testimonios.forEach((t, i) => {
+      tScroll.innerHTML += `<div class="testi-card"><div class="testi-stars">${'★'.repeat(t.estrellas)}</div><p class="testi-texto">"${t.texto}"</p><div class="testi-nombre">— ${t.nombre}</div></div>`;
+      const dot = document.createElement('button');
+      dot.className = 'testi-dot'+(i===0?' active':'');
+      dot.onclick = () => { const cards=tScroll.querySelectorAll('.testi-card'); if(cards[i]) tScroll.scrollTo({left:cards[i].offsetLeft,behavior:'smooth'}); };
+      tDots.appendChild(dot);
+    });
+    tScroll.addEventListener('scroll', () => {
+      const cards=[...tScroll.querySelectorAll('.testi-card')];
+      const sl=tScroll.scrollLeft; let ci=0,md=Infinity;
+      cards.forEach((c,i)=>{ const d=Math.abs(c.offsetLeft-sl); if(d<md){md=d;ci=i;} });
+      document.querySelectorAll('.testi-dot').forEach((d,i)=>d.classList.toggle('active',i===ci));
+    });
+
+    // CONTACTO
+    document.getElementById('contacto-eyebrow').textContent = D.negocio.direccion;
+    document.getElementById('contact-grid').innerHTML = `
+      <div class="c-card"><div class="c-card-ico">💬</div><div><h4>Catálogo online</h4><p>Todos nuestros productos y precios directo en WhatsApp.</p><a href="${waCat}" target="_blank" rel="noopener" class="c-card-btn">Ver catálogo <i class="fas fa-arrow-right"></i></a></div></div>
+      <div class="c-card"><div class="c-card-ico">📍</div><div><h4>Visítanos</h4><p>${D.negocio.direccion}. Atención personalizada con cita previa.</p><a href="${wa}" target="_blank" rel="noopener" class="c-card-btn">Agendar cita <i class="fas fa-calendar-check"></i></a></div></div>
+      <div class="c-card"><div class="c-card-ico">📸</div><div><h4>Instagram</h4><p>Síguenos en @${D.negocio.instagram} para novedades e inspiración.</p><a href="${ig}" target="_blank" rel="noopener" class="c-card-btn">Ver perfil <i class="fab fa-instagram"></i></a></div></div>
+      <div class="c-card"><div class="c-card-ico">⭐</div><div><h4>Clientes felices</h4><p>Cientos de personas confían en Papeli Studio para sus momentos especiales.</p><a href="${wa}" target="_blank" rel="noopener" class="c-card-btn">Ser uno más <i class="fas fa-heart"></i></a></div></div>`;
+    document.getElementById('mapa-dir').textContent     = D.negocio.direccion;
+    document.getElementById('mapa-horario').textContent = D.negocio.horario;
+
+    // FOOTER
+    document.getElementById('foot-slogan').textContent = D.negocio.slogan + ' · Temuco, Araucanía';
+    document.getElementById('foot-copy').textContent   = `© ${new Date().getFullYear()} Papeli Studio · Creatividad que enamora`;
+
+    // HAMBURGER
+    function toggleMenu() { document.getElementById('hamburger').classList.toggle('open'); document.getElementById('nav-drawer').classList.toggle('open'); }
+    function closeMenu()  { document.getElementById('hamburger').classList.remove('open'); document.getElementById('nav-drawer').classList.remove('open'); }
+    document.addEventListener('click', e => {
+      const d=document.getElementById('nav-drawer'), b=document.getElementById('hamburger');
+      if(d.classList.contains('open')&&!d.contains(e.target)&&!b.contains(e.target)) closeMenu();
+    });
+
+    // NAV SCROLL
+    window.addEventListener('scroll', () => { document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20); });
+
+    // REVEAL — corre después de que todo el DOM dinámico ya existe
+    // Los elementos estáticos con .reveal en el HTML se animan al hacer scroll
+    // Todo lo que se generó dinámicamente ya es visible sin clase reveal
+    const ro = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0, rootMargin: '0px 0px -30px 0px' }
+    );
+    document.querySelectorAll('.reveal').forEach(el => {
+      const rect = el.getBoundingClientRect();
+      // Si ya está visible en pantalla al cargar, mostrarlo de inmediato
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        el.classList.add('visible');
+      } else {
+        ro.observe(el);
+      }
+    });
+  </script>
+</body>
+</html>
