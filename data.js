@@ -1,12 +1,12 @@
 // ============================================================
 //  PAPELI STUDIO — ARCHIVO DE CONFIGURACIÓN
 //  Generado automáticamente por el panel admin
-//  Última actualización: 12-04-2026, 10:57:04 p. m.
+//  Última actualización: 25-04-2026, 3:30:57 a. m.
 // ============================================================
 
 const PAPELI_DATA = {
   "negocio": {
-    "nombre": "Papeli Studio",
+    "nombre": "Papeli Studio CL",
     "slogan": "Hago cosas lindas con papel",
     "descripcion": "Papelería creativa, sublimación, regalos personalizados y material corporativo. Hecho con amor desde Temuco, Araucanía.",
     "direccion": "Milano 03365, Temuco, Araucanía",
@@ -19,8 +19,8 @@ const PAPELI_DATA = {
     "tag": "Papelería creativa · Temuco, Araucanía",
     "titulo1": "Creatividad que",
     "titulo2": "enamora",
-    "titulo3": "al instante",
-    "descripcion": "Diseños únicos, sublimación, regalos personalizados y papelería con alma. Hecho con amor desde la Araucanía para el mundo.",
+    "titulo3": "al momento",
+    "descripcion": "Diseños únicos, sublimación, regalos personalizados y papelería con alma. ",
     "stat1": {
       "numero": "170+",
       "label": "Publicaciones"
@@ -130,53 +130,7 @@ const PAPELI_DATA = {
       ]
     }
   ],
-  "galeria": [
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Stickers+Escolares",
-      "alt": "Stickers escolares personalizados",
-      "categoria": "Stickers"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Tazas+Sublimadas",
-      "alt": "Tazas sublimadas con diseño",
-      "categoria": "Sublimación"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Kit+Regalo",
-      "alt": "Kit de regalo armado",
-      "categoria": "Regalos"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Tarjetas",
-      "alt": "Tarjetas y tags personalizados",
-      "categoria": "Tarjetas"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Invitaciones",
-      "alt": "Invitaciones artesanales",
-      "categoria": "Papelería"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Poleras",
-      "alt": "Poleras estampadas",
-      "categoria": "Sublimación"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Agenda+2026",
-      "alt": "Agenda 2026 personalizada",
-      "categoria": "Papelería"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Corporativo",
-      "alt": "Material corporativo",
-      "categoria": "Corporativo"
-    },
-    {
-      "src": "https://placehold.co/400x400/fdf0f3/c9607a?text=Bolsas+Deco",
-      "alt": "Bolsas decoradas temáticas",
-      "categoria": "Regalos"
-    }
-  ],
+  "galeria": [],
   "testimonios": [
     {
       "nombre": "Valentina R.",
